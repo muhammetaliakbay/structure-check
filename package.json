@@ -1,6 +1,6 @@
 {
   "name": "@muhammetaliakbay/structure-check",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Make safe and easy assertions on structure of object and data types",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -24,8 +24,10 @@
     "install": "npm run build",
     "test": "ts-mocha ./src/**/*.spec.ts"
   },
+  "dependencies": {
+    "rimraf": "^3.0.2"
+  },
   "devDependencies": {
-    "rimraf": "^3.0.2",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
