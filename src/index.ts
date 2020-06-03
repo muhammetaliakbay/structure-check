@@ -129,3 +129,5 @@ export function and<A, B>(... checkers: [StructureChecker<A>, StructureChecker<B
 export function instance<T>(constructor: {new(...args: any[]): T}): StructureChecker<T> {
     return (data => data instanceof constructor) as StructureChecker<T>;
 }
+
+export type ExportedStructureType<SC> = SC extends StructureChecker<infer T> ? T : never;
