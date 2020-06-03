@@ -1,0 +1,37 @@
+{
+  "name": "@muhammetaliakbay/structure-check",
+  "version": "0.0.1",
+  "description": "Make safe and easy assertions on structure of object and data types",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": "https://github.com/muhammetaliakbay/structure-check.git",
+  "author": "https://github.com/muhammetaliakbay",
+  "keywords": [
+    "typescript",
+    "generic",
+    "cast",
+    "assert",
+    "type",
+    "check",
+    "structure",
+    "data"
+  ],
+  "license": "GNU3",
+  "scripts": {
+    "publish-public": "npm publish --access public",
+    "clean": "rimraf ./lib",
+    "build": "(npm run clean) && (tsc)",
+    "install": "npm run build",
+    "test": "ts-mocha ./src/**/*.spec.ts"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "chai": "^4.2.0",
+    "mocha": "^7.2.0",
+    "ts-mocha": "^7.0.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "include": [
+    "src/**/*.ts"
+  ],
+  "compilerOptions": {
+    "declaration": true,
+    "inlineSourceMap": true,
+    "rootDir": "src",
+    "module": "commonjs",
+    "strict": true,
+    "target": "ES2016",
+    "outDir": "lib"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
