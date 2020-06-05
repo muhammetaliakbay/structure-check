@@ -1,5 +1,27 @@
+export interface StructureCheckerBody<T> {
+    (data: any): boolean;
+}
+
 export interface StructureChecker<T> {
     (data: any): data is T;
+    cast<C>(data: T extends C ? C : never): T;
+}
+
+export function checker<T>(body: StructureCheckerBody<T>): StructureChecker<T> {
+    const proxy: StructureChecker<T> = ((data: any) => body(data)) as StructureChecker<T>;
+    proxy.cast = (data) => cast(proxy, data);
+    return proxy;
+}
+
+export class TypeCastException extends Error {
+}
+
+export function cast<T, C>(checker: StructureChecker<T>, data: T extends C ? C : never): T {
+    if (checker(data)) {
+        return data;
+    } else {
+        throw new TypeCastException();
+    }
 }
 
 export interface ObjectStructureChecker<K extends string, V> extends StructureChecker<{[key in K]: V}> {
@@ -11,35 +33,35 @@ export interface ArrayStructureChecker<E> extends TupleStructureChecker<E[]> {
 }
 
 export function nullish(): StructureChecker<null> {
-    return (data => data == null) as StructureChecker<null>;
+    return checker(data => data == null);
 }
 
 export function like<V>(value: V): StructureChecker<V> {
-    return (data => data == value) as StructureChecker<V>;
+    return checker(data => data == value);
 }
 
 export function constant<V>(value: V): StructureChecker<V> {
-    return (data => data === value) as StructureChecker<V>;
+    return checker(data => data === value);
 }
 
 export function string(): StructureChecker<string> {
-    return (data => typeof data === 'string') as StructureChecker<string>;
+    return checker(data => typeof data === 'string');
 }
 
 export function number(): StructureChecker<number> {
-    return (data => typeof data === 'number') as StructureChecker<number>;
+    return checker(data => typeof data === 'number');
 }
 
 export function symbol(): StructureChecker<symbol> {
-    return (data => typeof data === 'symbol') as StructureChecker<symbol>;
+    return checker(data => typeof data === 'symbol');
 }
 
 export function boolean(): StructureChecker<boolean> {
-    return (data => typeof data === 'boolean') as StructureChecker<boolean>;
+    return checker(data => typeof data === 'boolean');
 }
 
 export function func(): StructureChecker<Function> {
-    return (data => typeof data === 'function') as StructureChecker<Function>;
+    return checker(data => typeof data === 'function');
 }
 
 export function optional<T>(checker: StructureChecker<T>): StructureChecker<T | null> {
@@ -49,7 +71,7 @@ export function optional<T>(checker: StructureChecker<T>): StructureChecker<T | 
 export type SpreadObjectDataTypes<O extends object> = {[K in keyof O]: StructureChecker<O[K]>};
 
 export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<O>): StructureChecker<O> {
-    return (data => {
+    return checker(data => {
         if (typeof data !== 'object' && !Array.isArray(structure)) {
             return false;
         }
@@ -63,7 +85,7 @@ export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<
         }
 
         return true;
-    }) as StructureChecker<O>;
+    });
 }
 
 export function property<K extends string, V>(
@@ -105,29 +127,29 @@ export function tuple<Es extends any[]>(...elementCheckers: SpreadArrayDataTypes
 
 export type ExtractStructureCheckers<SCs> = SCs extends StructureChecker<infer T>[] ? T : never;
 export function or<SCs extends StructureChecker<any>[]>(... checkers: SCs): StructureChecker<ExtractStructureCheckers<SCs>> {
-    return (data => {
+    return checker(data => {
         for(const checker of checkers) {
             if (checker(data)) {
                 return true;
             }
         }
         return false;
-    }) as StructureChecker<ExtractStructureCheckers<SCs>>;
+    });
 }
 
 export function and<A, B>(... checkers: [StructureChecker<A>, StructureChecker<B>]): StructureChecker<A & B> {
-    return (data => {
+    return checker(data => {
         for(const checker of checkers) {
             if (!checker(data)) {
                 return false;
             }
         }
         return true;
-    }) as StructureChecker<A & B>;
+    });
 }
 
 export function instance<T>(constructor: {new(...args: any[]): T}): StructureChecker<T> {
-    return (data => data instanceof constructor) as StructureChecker<T>;
+    return checker(data => data instanceof constructor);
 }
 
 export type ExportedStructureType<SC> = SC extends StructureChecker<infer T> ? T : never;
