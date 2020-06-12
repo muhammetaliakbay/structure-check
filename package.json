@@ -1,8 +1,11 @@
 {
   "name": "@muhammetaliakbay/structure-check",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Make safe and easy assertions on structure of object and data types",
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "types": "lib/index.d.ts",
   "repository": "https://github.com/muhammetaliakbay/structure-check.git",
   "author": "https://github.com/muhammetaliakbay",
