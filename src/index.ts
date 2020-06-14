@@ -72,7 +72,7 @@ export type SpreadObjectDataTypes<O extends object> = {[K in keyof O]: Structure
 
 export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<O>): StructureChecker<O> {
     return checker(data => {
-        if (typeof data !== 'object' && !Array.isArray(structure)) {
+        if (typeof data !== 'object' || Array.isArray(structure)) {
             return false;
         }
 

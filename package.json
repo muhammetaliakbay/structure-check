@@ -1,6 +1,6 @@
 {
   "name": "@muhammetaliakbay/structure-check",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Make safe and easy assertions on structure of object and data types",
   "main": "lib/index.js",
   "files": [
