@@ -1,0 +1,13 @@
+{
+  "mode": "modules",
+  "out": "./docs",
+  "inputFiles": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./src/**/*.spec.ts"
+  ],
+  "stripInternal": true,
+  "excludePrivate": true,
+  "excludeNotExported": true
+}

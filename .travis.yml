@@ -1,0 +1,16 @@
+language: node_js
+node_js: 14
+
+install:
+  - npm install
+
+script:
+  - npm test
+  - npm run build
+  - npm run build-doc
+
+deploy:
+  - provider: npm
+    email: $NPM_EMAIL
+    api_token: $NPM_AUTH
+    skip_cleanup: true
