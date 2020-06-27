@@ -1,4 +1,4 @@
-# Structure-Check &middot; [![Build Status](https://travis-ci.org/muhammetaliakbay/structure-check.svg?branch=master)](https://travis-ci.org/muhammetaliakbay/structure-check) [![GitHub](https://img.shields.io/github/license/muhammetaliakbay/structure-check)](https://opensource.org/licenses/GPL-3.0) [![npm (scoped)](https://img.shields.io/npm/v/@muhammetaliakbay/structuer-check)](https://www.npmjs.com/package/@muhammetaliakbay/structure-check)
+# Structure-Check &middot; [![Build Status](https://travis-ci.org/muhammetaliakbay/structure-check.svg?branch=master)](https://travis-ci.org/muhammetaliakbay/structure-check) [![GitHub](https://img.shields.io/github/license/muhammetaliakbay/structure-check)](https://opensource.org/licenses/GPL-3.0) [![npm (scoped)](https://img.shields.io/npm/v/@muhammetaliakbay/structure-check)](https://www.npmjs.com/package/@muhammetaliakbay/structure-check)
 
 Structure-Check is a TypeScript library for dealing with casting and validating data structures on runtime.
 
