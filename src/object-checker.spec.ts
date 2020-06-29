@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import {array, constant, number, object, optional, or, string, tuple} from './index';
+import {array, constant, number, objectOpt, nullable, or, string, tuple} from './index';
 
 describe('object-checker', () => {
     it('checks if data fits in the structure of desired object', () => {
-        const checker = object({
-            hello: optional(string()),
+        const checker = objectOpt({
+            hello: nullable(string()),
             world: or(number(), tuple(number(), number()), array(constant('earth' as const)))
         });
 

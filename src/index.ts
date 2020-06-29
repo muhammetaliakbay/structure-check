@@ -250,7 +250,7 @@ export function func(): StructureChecker<Function> {
  * @param checker - Structure checker instance to validate if the input data fits into when the data is not nullish
  * @returns A structure checker instance which validates that if input data is nullish or fits in the specified structure
  */
-export function optional<T>(checker: StructureChecker<T>): StructureChecker<T | Nullish> {
+export function nullable<T>(checker: StructureChecker<T>): StructureChecker<T | Nullish> {
     return or(checker, nullish());
 }
 
@@ -260,19 +260,77 @@ export function optional<T>(checker: StructureChecker<T>): StructureChecker<T | 
 type SpreadObjectDataTypes<O extends object> = {[K in keyof O]: StructureChecker<O[K]>};
 
 /**
- * Creates an essential structure checker which validates that if input data is and object an its field structure fits into the specified one
+ * Creates an essential structure checker which validates that if input data is and object an its field structure fits into the specified one.
+ * All properties must be in the object to pass validation even it is nullable. This is the key difference from {@link objectOpt}
  * @typeParam O - Type definition of the desired structure
  * @param structure - An object which specifies fields and their structures to be used for object validation
  * @returns Returns a structure checker instance which validates that if input data is an object and its field structure fits into the specified one
  */
-export function object<O extends object = {}>(structure: SpreadObjectDataTypes<O>): StructureChecker<O>;
+export function object<O extends object = {}>(structure: SpreadObjectDataTypes<O>): StructureChecker<Required<O>>;
 /**
- * Creates an essential structure checker which validates that if input data is an object (or an array)
+ * Creates an essential structure checker which validates that if input data is an object (or an array).
+ * All properties must be in the object to pass validation even it is nullable. This is the key difference from {@link objectOpt}
  * @returns Returns a structure checker instance which validates that if input data is an object (or an array)
  */
 export function object(): StructureChecker<{} | []>;
 
-export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<O>): StructureChecker<O> {
+export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<O>): StructureChecker<Required<O>> {
+    return checker(data => {
+        if (data == null || typeof data !== 'object' || Array.isArray(structure)) {
+            return false;
+        }
+
+        if (structure != null) {
+            for (const key of Object.keys(structure)) {
+                if (!(key in data)) { // field must be in the object even it is nullable one
+                    return false;
+                } else if (!(((structure as any)[key] as StructureChecker<any>) (data[key]))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    });
+}
+
+
+/**
+ * @internal
+ */
+type NonNullablePropertyNames<O extends object> = {
+    [K in keyof O]: undefined extends O[K] ? never : K;
+} [keyof O];
+/**
+ * @internal
+ */
+type NullablePropertyNames<O extends object> = {
+    [K in keyof O]: undefined extends O[K] ? K : never;
+} [keyof O];
+/**
+ * @internal
+ */
+type NonNullableProperties<O extends object> = Pick<O, NonNullablePropertyNames<O>>;
+/**
+ * @internal
+ */
+type NullableProperties<O extends object> = Pick<O, NullablePropertyNames<O>>;
+
+/**
+ * @internal
+ */
+type WithOptionals<O extends object> =
+    Required<NonNullableProperties<O>> & Partial<NullableProperties<O>>;
+
+/**
+ * Works as {@link object}, but also converts 'undefined'able fields into optional fields.
+ * Nullable properties doesn't have to be in the object to pass validation. This is the key difference from {@link object}
+ * @typeParam O - Type definition of the desired structure
+ * @param structure - An object which specifies fields and their structures to be used for object validation
+ * @returns Returns a checker instance as how {@link object} does, but also converts 'undefined'able fields into optional fields
+ * @see {@link object}
+ */
+export function objectOpt<O extends object = {}>(structure: SpreadObjectDataTypes<O>): StructureChecker<WithOptionals<O>> {
     return checker(data => {
         if (data == null || typeof data !== 'object' || Array.isArray(structure)) {
             return false;
