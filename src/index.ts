@@ -459,6 +459,7 @@ export function instance<T>(constructor: {new(...args: any[]): T}): StructureChe
 }
 
 /**
- * @internal
+ * An helper type which takes a structure-checker type as a parameter and returns structure type of it
+ * @typeParam SC - Structure checker type to export structure type from
  */
-type ExportedStructureType<SC> = SC extends StructureChecker<infer T> ? T : never;
+export type ExportStructure<SC extends StructureChecker<any>> = SC extends StructureChecker<infer T> ? T : never;
