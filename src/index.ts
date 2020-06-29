@@ -85,11 +85,32 @@ interface ArrayStructureChecker<E> extends TupleStructureChecker<E[]> {
 }
 
 /**
- * Creates an essential structure checker which validates that if the input data weakly equals to the null
- * @returns A structure checker instance which validates that if the input data weakly equals to the null
+ * Defines the union of 'null' and 'undefined' types
  */
-export function nullish(): StructureChecker<null> {
-    return checker(data => data == null);
+export type Nullish = null | undefined;
+
+/**
+ * Creates an essential structure checker which validates that if the input data equals to the null or undefined
+ * @returns A structure checker instance which validates that if the input data equals to the null or undefined
+ */
+export function nullish(): StructureChecker<Nullish> {
+    return checker(data => data === null || data === undefined);
+}
+
+/**
+ * Creates an essential structure checker which validates that if the input data strictly equals to undefined
+ * @returns A structure checker instance which validates that if the input data strictly equals to undefined
+ */
+export function undef(): StructureChecker<undefined> {
+    return checker(data => data === undefined);
+}
+
+/**
+ * Creates an essential structure checker which validates that if the input data strictly equals to null
+ * @returns A structure checker instance which validates that if the input data strictly equals to null
+ */
+export function nul(): StructureChecker<null> {
+    return checker(data => data === null);
 }
 
 /**
@@ -229,7 +250,7 @@ export function func(): StructureChecker<Function> {
  * @param checker - Structure checker instance to validate if the input data fits into when the data is not nullish
  * @returns A structure checker instance which validates that if input data is nullish or fits in the specified structure
  */
-export function optional<T>(checker: StructureChecker<T>): StructureChecker<T | null> {
+export function optional<T>(checker: StructureChecker<T>): StructureChecker<T | Nullish> {
     return or(checker, nullish());
 }
 

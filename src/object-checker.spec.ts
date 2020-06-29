@@ -5,7 +5,7 @@ describe('object-checker', () => {
     it('checks if data fits in the structure of desired object', () => {
         const checker = object({
             hello: optional(string()),
-            world: or(number(), tuple(number(), number()), array(constant('earth')))
+            world: or(number(), tuple(number(), number()), array(constant('earth' as const)))
         });
 
         expect(
