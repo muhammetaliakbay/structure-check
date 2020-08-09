@@ -276,7 +276,7 @@ export function object(): StructureChecker<{} | []>;
 
 export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<O>): StructureChecker<Required<O>> {
     return checker(data => {
-        if (data == null || typeof data !== 'object' || Array.isArray(structure)) {
+        if (data == null || typeof data !== 'object' || Array.isArray(data)) {
             return false;
         }
 
@@ -287,6 +287,31 @@ export function object<O extends object = {}>(structure?: SpreadObjectDataTypes<
                 } else if (!(((structure as any)[key] as StructureChecker<any>) (data[key]))) {
                     return false;
                 }
+            }
+        }
+
+        return true;
+    });
+}
+
+/**
+ * Creates an essential structure checker which validates that if input data is and object an its field values fit into the specified one.
+ * @typeParam V - Type definition of the desired field value
+ * @typeParam O - Type definition of the desired structure
+ * @param valueChecker - An structure checker which specifies field value type to be used for object validation
+ * @returns Returns a structure checker instance which validates that if input data is and object an its field values fit into the specified one
+ */
+export function dict<
+    V, O extends {[key: string]: V} = {[key: string]: V}
+    >(valueChecker: StructureChecker<V>): StructureChecker<O> {
+    return checker(data => {
+        if (data == null || typeof data !== 'object' || Array.isArray(data)) {
+            return false;
+        }
+
+        for (const value of Object.values(data)) {
+            if (!valueChecker(value)) {
+                return false;
             }
         }
 
@@ -332,7 +357,7 @@ type WithOptionals<O extends object> =
  */
 export function objectOpt<O extends object = {}>(structure: SpreadObjectDataTypes<O>): StructureChecker<WithOptionals<O>> {
     return checker(data => {
-        if (data == null || typeof data !== 'object' || Array.isArray(structure)) {
+        if (data == null || typeof data !== 'object' || Array.isArray(data)) {
             return false;
         }
 
